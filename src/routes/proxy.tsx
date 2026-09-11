@@ -18,6 +18,8 @@ export type Tab = {
   url: string;
 };
 
+const defaultSearchUrl = "https://html.duckduckgo.com/html/";
+
 export const Route = createFileRoute("/proxy")({
   component: RouteComponent
 });
@@ -26,7 +28,12 @@ function RouteComponent() {
   const [transportReady, setTransportReady] = useState(Boolean(window.Connection));
   const [tabs, setTabs] = useState<Tab[]>(() => {
     try {
-      return JSON.parse(localStorage.getItem("tabs") || "[]");
+      const storedTabs = JSON.parse(localStorage.getItem("tabs") || "[]") as Tab[];
+      return storedTabs.map((tab) =>
+        /^https:\/\/duckduckgo\.com\/?$/.test(tab.url)
+          ? { ...tab, title: defaultSearchUrl, url: defaultSearchUrl }
+          : tab
+      );
     } catch {
       localStorage.removeItem("tabs");
       return [];
@@ -79,14 +86,15 @@ function RouteComponent() {
 
   function redirect(id: number, query: string) {
     const tab = tabs.find((x) => x.id === id)!;
+    const trimmedQuery = query.trim();
 
     let url;
-    if (/^https?:\/\//.test(query)) {
-      url = query;
-    } else if (/^.+\..+/.test(query)) {
-      url = `https://${query}`;
+    if (/^https?:\/\//i.test(trimmedQuery)) {
+      url = trimmedQuery;
+    } else if (/^.+\..+/.test(trimmedQuery)) {
+      url = `https://${trimmedQuery}`;
     } else {
-      url = `https://duckduckgo.com/?q=${query}`;
+      url = `${defaultSearchUrl}?q=${encodeURIComponent(trimmedQuery)}`;
     }
 
     tab.url = url;
@@ -117,7 +125,7 @@ function RouteComponent() {
     }
 
     if (tabs.length === 0) {
-      addTab("https://duckduckgo.com/");
+      addTab(defaultSearchUrl);
       return;
     }
 
@@ -264,7 +272,7 @@ function RouteComponent() {
             aria-label="New tab"
             className="rounded-lg border border-accent-primary/50 bg-accent-primary/15 p-2 text-accent-primary transition hover:bg-accent-primary hover:text-[#11151c]"
             onClick={() => {
-              addTab("https://duckduckgo.com");
+              addTab(defaultSearchUrl);
             }}
           >
             <FiPlus />
