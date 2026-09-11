@@ -56,7 +56,7 @@ function RouteComponent() {
     // @ts-expect-error scram
     iframe.src = scram.encodeUrl(tab.url);
     iframe.id = tab.id.toString();
-    iframe.className = "w-full flex-1";
+    iframe.className = "absolute inset-x-0 bottom-0 top-[4.5rem] h-auto w-full border-0 bg-white";
     document.getElementById("frames")!.appendChild(iframe);
   }
 
@@ -68,8 +68,9 @@ function RouteComponent() {
 
     const oldActiveTab = activeTab;
     if (oldActiveTab === id) {
-      setTabs(tabs.filter((x) => x.id !== id));
-      setActiveTab(tabs.filter((x) => x.id !== id)[0]?.id ?? 0);
+      const remainingTabs = tabs.filter((x) => x.id !== id);
+      setTabs(remainingTabs);
+      setActiveTab(remainingTabs[0]?.id ?? 0);
       setInputValue(null);
     } else {
       setTabs(tabs.filter((x) => x.id !== id));
@@ -96,7 +97,11 @@ function RouteComponent() {
 
     const index = tabs.findIndex((x) => x.id === id);
 
-    setTabs([...tabs.slice(0, index), tab, ...tabs.slice(index + 1)]);
+    setTabs((currentTabs) => [
+      ...currentTabs.slice(0, index),
+      tab,
+      ...currentTabs.slice(index + 1)
+    ]);
   }
 
   useEffect(() => {
@@ -111,7 +116,15 @@ function RouteComponent() {
       return () => window.clearInterval(readyCheck);
     }
 
-    if (tabs.length === 0) addTab("https://duckduckgo.com/");
+    if (tabs.length === 0) {
+      addTab("https://duckduckgo.com/");
+      return;
+    }
+
+    if (!tabs.some((tab) => tab.id === activeTab)) {
+      setActiveTab(tabs[0].id);
+      return;
+    }
 
     tabs.forEach((tab) => {
       if (!document.getElementById(tab.id.toString())) addFrame(tab);
@@ -179,13 +192,13 @@ function RouteComponent() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="flex h-full w-full select-none bg-bg-primary"
+      className="flex h-full w-full select-none overflow-hidden bg-[#11151c]"
     >
-      <div className="flex h-full w-16 flex-col border-r border-text-primary/10 bg-bg-secondary/30 transition-all sm:w-64">
-        <div className="flex h-16 w-full items-center justify-center border-b border-text-primary/10">
+      <div className="flex h-full w-16 flex-col border-r border-white/10 bg-[#171c25] shadow-2xl transition-all sm:w-72">
+        <div className="flex h-16 w-full items-center justify-center border-b border-white/10 bg-[#11151c]">
           <a href="/">
-            <span className="hidden text-lg font-black tracking-wide sm:inline">Azyon</span>
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-primary font-black text-bg-primary sm:hidden">A</span>
+            <span className="hidden text-lg font-black tracking-[0.14em] text-white sm:inline">AZYON <span className="text-accent-primary">/ WEB</span></span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-accent-primary/60 bg-accent-primary/15 font-black text-accent-primary sm:hidden">A</span>
           </a>
         </div>
         <Reorder.Group
@@ -195,7 +208,7 @@ function RouteComponent() {
             setTabs(newTabs);
           }}
           values={tabs}
-          className="scrollbar-none flex w-full flex-1 flex-col items-center gap-2 overflow-y-scroll p-2 transition-none sm:p-4"
+          className="scrollbar-none flex w-full flex-1 flex-col items-center gap-2 overflow-y-scroll p-3 transition-none sm:p-4"
         >
           <AnimatePresence>
             {tabs.map((tab) => {
@@ -213,8 +226,8 @@ function RouteComponent() {
                   }}
                   className={`flex aspect-square h-11 w-11 items-center justify-center rounded-xl border border-transparent p-2 text-sm transition-all sm:h-auto sm:min-h-11 sm:w-full sm:justify-normal sm:gap-2 ${
                     tab.id === activeTab
-                      ? "border-accent-secondary/30 bg-accent-secondary/20 text-text-primary shadow-lg"
-                      : "bg-bg-secondary/60 hover:border-text-primary/10 hover:bg-bg-secondary"
+                      ? "border-accent-primary/50 bg-accent-primary/10 text-white shadow-lg shadow-black/20"
+                      : "border-white/5 bg-white/[0.03] text-white/70 hover:border-white/20 hover:bg-white/[0.07]"
                   }`}
                   onMouseDown={() => {
                     setActiveTab(tab.id);
@@ -223,16 +236,16 @@ function RouteComponent() {
                 >
                   <img
                     src={`https://www.google.com/s2/favicons?domain=${tab.url}`}
-                    className="h-5 w-5"
+                    className="h-5 w-5 rounded-md"
                     draggable={false}
                   ></img>
-                  <span className="hidden flex-1 truncate whitespace-nowrap text-text-primary sm:block">
+                  <span className="hidden flex-1 truncate whitespace-nowrap text-sm font-semibold sm:block">
                     {tab.title}
                   </span>
                   <button
                     type="button"
                     aria-label={`Close ${tab.title}`}
-                    className="p-1 sm:block"
+                    className="rounded-md p-1 text-white/40 transition hover:bg-white/10 hover:text-white sm:block"
                     onClick={(e) => {
                       e.stopPropagation();
                       removeTab(tab.id);
@@ -245,11 +258,11 @@ function RouteComponent() {
             })}
           </AnimatePresence>
         </Reorder.Group>
-        <div className="flex h-16 w-full items-center justify-end border-t border-text-primary/10 p-4 text-xl">
+        <div className="flex h-16 w-full items-center justify-end border-t border-white/10 p-4 text-xl">
           <button
             type="button"
             aria-label="New tab"
-            className="rounded-lg bg-bg-secondary p-2 transition hover:bg-accent-secondary hover:text-bg-primary"
+            className="rounded-lg border border-accent-primary/50 bg-accent-primary/15 p-2 text-accent-primary transition hover:bg-accent-primary hover:text-[#11151c]"
             onClick={() => {
               addTab("https://duckduckgo.com");
             }}
@@ -258,8 +271,8 @@ function RouteComponent() {
           </button>
         </div>
       </div>
-      <div className="flex flex-1 flex-col bg-bg-primary" id="frames">
-        <div className="flex min-h-16 w-full items-center justify-center gap-2 border-b border-text-primary/10 bg-bg-secondary/70 p-3 backdrop-blur-xl">
+      <div className="relative flex flex-1 flex-col bg-[#0d1117]" id="frames">
+        <div className="relative z-10 flex min-h-16 w-full items-center justify-center gap-2 border-b border-white/10 bg-[#171c25]/95 p-3 shadow-xl backdrop-blur-xl">
           <button
             type="button"
             aria-label="Go back"
@@ -270,7 +283,7 @@ function RouteComponent() {
                 ) as HTMLIFrameElement
               ).contentWindow!.history.back();
             }}
-            className="flex aspect-square h-full cursor-pointer items-center justify-center rounded-lg px-2 text-lg transition-all hover:bg-bg-primary hover:text-accent-primary hover:shadow"
+            className="flex aspect-square h-10 cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] px-2 text-lg text-white/70 transition-all hover:border-accent-primary/50 hover:bg-accent-primary/10 hover:text-accent-primary"
           >
             <FiArrowLeft />
           </button>
@@ -284,7 +297,7 @@ function RouteComponent() {
                 ) as HTMLIFrameElement
               ).contentWindow!.history.forward();
             }}
-            className="flex aspect-square h-full cursor-pointer items-center justify-center rounded-lg px-2 text-lg transition-all hover:bg-bg-primary hover:text-accent-primary hover:shadow"
+            className="flex aspect-square h-10 cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] px-2 text-lg text-white/70 transition-all hover:border-accent-primary/50 hover:bg-accent-primary/10 hover:text-accent-primary"
           >
             <FiArrowRight />
           </button>
@@ -298,12 +311,12 @@ function RouteComponent() {
                 ) as HTMLIFrameElement
               ).contentWindow!.location.reload();
             }}
-            className="flex aspect-square h-full cursor-pointer items-center justify-center rounded-lg px-2 text-lg transition-all hover:bg-bg-primary hover:text-accent-primary hover:shadow"
+            className="flex aspect-square h-10 cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] px-2 text-lg text-white/70 transition-all hover:border-accent-primary/50 hover:bg-accent-primary/10 hover:text-accent-primary"
           >
             <FiRotateCw />
           </button>
           <input
-            className="h-full flex-1 rounded-xl border border-text-primary/20 bg-bg-primary px-4 py-2 font-medium text-text-primary shadow-inner outline-none ring-accent-primary placeholder:text-text-secondary/70 transition focus:border-accent-primary focus:ring-2"
+            className="h-10 min-w-0 flex-1 rounded-lg border border-white/15 bg-[#0d1117] px-4 py-2 font-medium text-white shadow-inner outline-none ring-accent-primary placeholder:text-white/35 transition focus:border-accent-primary focus:ring-2"
             value={
               inputValue !== null
                 ? inputValue
@@ -328,7 +341,7 @@ function RouteComponent() {
                 .getElementById(activeTab.toString())!
                 .requestFullscreen();
             }}
-            className="flex aspect-square h-full cursor-pointer items-center justify-center rounded-lg px-2 text-lg transition-all hover:bg-bg-primary hover:text-accent-primary hover:shadow"
+            className="flex aspect-square h-10 cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] px-2 text-lg text-white/70 transition-all hover:border-accent-primary/50 hover:bg-accent-primary/10 hover:text-accent-primary"
           >
             <FiMaximize />
           </button>
@@ -344,7 +357,7 @@ function RouteComponent() {
                 ).contentWindow!.location.href
               );
             }}
-            className="flex aspect-square h-full cursor-pointer items-center justify-center rounded-lg px-2 text-lg transition-all hover:bg-bg-primary hover:text-accent-primary hover:shadow"
+            className="flex aspect-square h-10 cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] px-2 text-lg text-white/70 transition-all hover:border-accent-primary/50 hover:bg-accent-primary/10 hover:text-accent-primary"
           >
             <FiExternalLink />
           </button>

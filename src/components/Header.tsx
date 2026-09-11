@@ -32,7 +32,7 @@ function Link(props: {
       href={props.href}
       target={/^(https?:)?\/\//.test(props.href) ? "_blank" : "_self"}
       variants={item}
-      className="flex items-center gap-2 transition-colors hover:text-accent-primary"
+      className="flex items-center gap-2 rounded-full border border-text-primary/20 px-3 py-2 transition-colors hover:border-accent-primary/60 hover:bg-accent-primary/10 hover:text-accent-primary"
       aria-label={props.label ?? props.text}
     >
       <props.icon />
@@ -69,7 +69,7 @@ export function Header() {
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-primary text-lg font-black text-bg-primary shadow-[0_0_24px_rgba(255,118,92,0.28)] transition-transform group-hover:-rotate-6">A</span>
           <span className="hidden text-base font-black tracking-[0.08em] sm:inline">AZYON</span>
         </motion.a>
-        <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.12em] text-text-secondary sm:gap-6">
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-text-secondary sm:gap-3">
           <Link href="/" icon={PiHouseBold} text="Home" />
           <Link href="/games" icon={PiGameControllerBold} text="Games" />
           <Link href="/proxy" icon={PiDetectiveBold} text="Access Web / AI" />
@@ -81,12 +81,12 @@ export function Header() {
           <motion.input
             name="q"
             variants={item}
-            className="search-input h-11 w-56 rounded-full border border-text-primary/20 py-2 pl-10 pr-11 text-sm font-normal text-text-primary shadow-[0_8px_24px_rgba(0,0,0,0.22)] backdrop-blur-xl outline-none transition-all placeholder:text-text-secondary/80 hover:border-accent-secondary/50 focus:w-64 focus:border-accent-primary/70 focus:ring-2 focus:ring-accent-primary/20"
+            className="search-input h-11 w-56 rounded-full border-2 border-text-primary/25 py-2 pl-10 pr-11 text-sm font-normal text-text-primary shadow-[0_8px_24px_rgba(0,0,0,0.22)] backdrop-blur-xl outline-none transition-all placeholder:text-text-secondary/80 hover:border-accent-secondary/50 focus:w-64 focus:border-accent-primary/70 focus:ring-2 focus:ring-accent-primary/20"
             placeholder="Search games"
             type="text"
             style={{ backgroundColor: "var(--bg-secondary)" }}
           />
-          <button type="submit" aria-label="Submit search" className="absolute right-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-accent-primary text-bg-primary transition hover:scale-105 hover:brightness-110">
+          <button type="submit" aria-label="Submit search" className="absolute right-1.5 flex h-8 w-8 items-center justify-center rounded-full border border-accent-primary/70 bg-accent-primary text-bg-primary transition hover:scale-105 hover:brightness-110">
             <PiArrowUpRightBold />
           </button>
         </form>
