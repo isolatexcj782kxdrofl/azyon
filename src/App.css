@@ -156,6 +156,19 @@ select {
   background: #000;
 }
 
+#game {
+  display: block;
+  min-height: min(70vh, 720px);
+  height: clamp(360px, 70vh, 720px);
+  background: #000;
+}
+
+#game:fullscreen,
+#game:-webkit-full-screen {
+  min-height: 100dvh;
+  height: 100dvh;
+}
+
 #game:-webkit-full-screen {
   position: fixed;
   inset: 0;

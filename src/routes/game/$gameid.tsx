@@ -78,7 +78,7 @@ function RouteComponent() {
           scrolling="no"
           title={game.title}
           tabIndex={0}
-          allow="fullscreen; pointer-lock"
+          allow="fullscreen; pointer-lock; gamepad"
           src={backendUrl(`/game-assets/${game.id}/index.html`)}
           onPointerDown={(event) => {
             event.currentTarget.focus();

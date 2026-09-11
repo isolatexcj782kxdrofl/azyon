@@ -24,6 +24,45 @@ const app = fastify({
   serverFactory
 });
 
+const gameFrameScript = `
+<script>
+(() => {
+  const resizeGame = () => {
+    document.documentElement.style.width = "100%";
+    document.documentElement.style.height = "100%";
+    document.body.style.width = "100%";
+    document.body.style.height = "100%";
+    document.body.style.margin = "0";
+    document.body.style.overflow = "hidden";
+    document.querySelectorAll("canvas, #game, #gameContainer, #unityContainer, .webgl-content").forEach((element) => {
+      element.style.maxWidth = "100%";
+      element.style.maxHeight = "100%";
+    });
+  };
+
+  window.addEventListener("resize", resizeGame);
+  document.addEventListener("fullscreenchange", resizeGame);
+  document.addEventListener("pointerdown", (event) => {
+    const target = event.target;
+    if (target && typeof target.focus === "function") target.focus();
+  }, true);
+  resizeGame();
+  new MutationObserver(resizeGame).observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>`;
+
+app.addHook("onSend", async (request, reply, payload) => {
+  if (!request.url.startsWith("/game-assets/") || !request.url.endsWith(".html")) {
+    return payload;
+  }
+
+  const html = Buffer.isBuffer(payload) ? payload.toString("utf8") : String(payload);
+  if (!html.includes("</body>")) return payload;
+
+  reply.type("text/html");
+  return html.replace("</body>", `${gameFrameScript}</body>`);
+});
+
 app.register(fastifyStatic, {
   root: path.join(__dirname, "dist"),
   prefix: "/",
