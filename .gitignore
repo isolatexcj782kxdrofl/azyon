@@ -12,6 +12,8 @@ node_modules
 dist
 dist-ssr
 *.local
+assets/.git.backup/
+.assets-git-backup/
 
 # Editor directories and files
 .vscode/*
