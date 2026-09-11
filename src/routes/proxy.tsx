@@ -24,7 +24,14 @@ export const Route = createFileRoute("/proxy")({
 
 function RouteComponent() {
   const [transportReady, setTransportReady] = useState(Boolean(window.Connection));
-  const [tabs, setTabs] = useState<Tab[]>([]);
+  const [tabs, setTabs] = useState<Tab[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem("tabs") || "[]");
+    } catch {
+      localStorage.removeItem("tabs");
+      return [];
+    }
+  });
   const [activeTab, setActiveTab] = useState<number>(
     Number(localStorage.getItem("activeTab")!) || 0
   );
@@ -37,8 +44,7 @@ function RouteComponent() {
       favicon: "https://www.google.com/s2/favicons?domain=duckduckgo.com",
       url
     };
-    setTabs([...tabs, tab]);
-    addFrame(tab);
+    setTabs((currentTabs) => [...currentTabs, tab]);
     setActiveTab(tab.id);
     setInputValue(null);
 
@@ -94,17 +100,6 @@ function RouteComponent() {
   }
 
   useEffect(() => {
-    const storedTabs = localStorage.getItem("tabs");
-    if (!storedTabs) return;
-
-    try {
-      setTabs(JSON.parse(storedTabs));
-    } catch {
-      localStorage.removeItem("tabs");
-    }
-  }, []);
-
-  useEffect(() => {
     if (!transportReady) {
       const readyCheck = window.setInterval(() => {
         if (window.Connection) {
@@ -131,6 +126,11 @@ function RouteComponent() {
       iframe.style.display = "block";
     }
   }, [transportReady, tabs, activeTab]);
+
+  useEffect(() => {
+    localStorage.setItem("tabs", JSON.stringify(tabs));
+    localStorage.setItem("activeTab", activeTab.toString());
+  }, [tabs, activeTab]);
 
   useEffect(() => {
     const iframe = document.getElementById(
@@ -229,15 +229,17 @@ function RouteComponent() {
                   <span className="hidden flex-1 truncate whitespace-nowrap text-text-primary sm:block">
                     {tab.title}
                   </span>
-                  <div
-                    className="hidden sm:block"
+                  <button
+                    type="button"
+                    aria-label={`Close ${tab.title}`}
+                    className="p-1 sm:block"
                     onClick={(e) => {
                       e.stopPropagation();
                       removeTab(tab.id);
                     }}
                   >
                     <FiX />
-                  </div>
+                  </button>
                 </Reorder.Item>
               );
             })}
