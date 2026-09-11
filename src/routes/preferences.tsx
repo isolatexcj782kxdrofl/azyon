@@ -15,7 +15,7 @@ function RouteComponent() {
     () => localStorage.getItem("icon")?.trim() || "/brand-icon.png"
   );
   const [theme, setTheme] = useState(
-    () => localStorage.getItem("theme") || "arcade-ember"
+    () => localStorage.getItem("theme") || "mocha"
   );
   const [reduceMotion, setReduceMotion] = useState(
     () => localStorage.getItem("reduceMotion") === "true"
@@ -56,7 +56,6 @@ function RouteComponent() {
                 reloadWithPreference("theme", event.currentTarget.value);
               }}
             >
-              <option value="arcade-ember">Arcade Ember</option>
               {themes.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
             </select>
           </label>

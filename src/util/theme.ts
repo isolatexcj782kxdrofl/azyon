@@ -1,17 +1,7 @@
 import { themes } from "../themes";
 
 function selectedTheme(): Theme {
-  return themes.find((theme) => theme.id === localStorage.getItem("theme")) ?? {
-    name: "Arcade Ember",
-    category: "default",
-    id: "arcade-ember",
-    bgPrimary: "#0b1220",
-    bgSecondary: "#15243a",
-    textPrimary: "#f3f7ed",
-    textSecondary: "#a7b7c7",
-    accentPrimary: "#c6f36b",
-    accentSecondary: "#59d6c3"
-  };
+  return themes.find((theme) => theme.id === localStorage.getItem("theme")) ?? themes.find((theme) => theme.id === "mocha")!;
 }
 
 export function getStyle(): string {

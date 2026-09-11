@@ -3,6 +3,7 @@ import { localGameIds } from "../util/localGameIds";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
+import { useEffect, useState } from "react";
 import {
   PiArrowUpRightBold,
   PiGameControllerBold,
@@ -13,7 +14,29 @@ import {
 export const Route = createFileRoute("/")({
   component: Home
 });
+
+const subtitles = [
+  "A hand-picked arcade for quick breaks, high scores, and one-more-round energy.",
+  "Jump in fast, chase a high score, and leave whenever real life loads back in.",
+  "Small games, big replay energy, and a fresh excuse to play one more round.",
+  "Your next favorite game is probably one click away."
+];
+
 export function Home() {
+  const [subtitleIndex, setSubtitleIndex] = useState(() =>
+    Math.floor(Date.now() / (3 * 60 * 60 * 1000)) % subtitles.length
+  );
+
+  useEffect(() => {
+    const updateSubtitle = () => {
+      setSubtitleIndex(
+        Math.floor(Date.now() / (3 * 60 * 60 * 1000)) % subtitles.length
+      );
+    };
+    const timer = window.setInterval(updateSubtitle, 60 * 1000);
+    return () => window.clearInterval(timer);
+  }, [subtitles.length]);
+
   const { data } = useQuery({
     queryKey: ["games"],
     queryFn: async () => {
@@ -75,7 +98,7 @@ export function Home() {
             AZYON
           </h1>
           <p className="max-w-lg text-base leading-7 text-text-secondary sm:text-lg">
-            A hand-picked arcade for quick breaks, high scores, and one-more-round energy.
+            {subtitles[subtitleIndex]}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a href="/games" className="accent-glow flex items-center gap-2 rounded-full bg-accent-primary px-6 py-3.5 text-sm font-black text-bg-primary transition hover:brightness-110">
@@ -89,7 +112,7 @@ export function Home() {
             </a>
           </div>
           <div className="mt-8 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-text-secondary">
-            <PiGameControllerBold className="text-accent-primary" /> 200+ games / no account needed
+            <PiGameControllerBold className="text-accent-primary" /> {data.length}+ free games / no account needed
           </div>
         </div>
       </section>
