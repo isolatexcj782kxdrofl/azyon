@@ -7,7 +7,8 @@ import {
   PiGearBold,
   PiDetectiveBold,
   PiMagnifyingGlassBold,
-  PiArrowUpRightBold
+  PiArrowUpRightBold,
+  PiDiscordLogoBold
 } from "react-icons/pi";
 
 const item = {
@@ -91,6 +92,17 @@ export function Header() {
           </button>
         </form>
         <Link href="/preferences" icon={PiGearBold} label="Preferences" />
+        <motion.a
+          href="https://discord.gg/vEeytdFjpW"
+          target="_blank"
+          rel="noreferrer"
+          variants={item}
+          className="flex items-center gap-2 rounded-full border border-accent-primary/70 bg-accent-primary/15 px-4 py-2 text-xs font-bold uppercase tracking-[0.1em] text-accent-primary transition-colors hover:bg-accent-primary hover:text-bg-primary"
+          aria-label="Join the server"
+        >
+          <PiDiscordLogoBold />
+          <span>Join the server</span>
+        </motion.a>
       </div>
     </motion.nav>
   );
