@@ -83,7 +83,7 @@ function RouteComponent() {
           onPointerDown={(event) => {
             event.currentTarget.focus();
           }}
-          className="aspect-video w-full border-0 outline-none [&:fullscreen]:h-screen [&:fullscreen]:w-screen [&:fullscreen]:max-w-none [&:fullscreen]:aspect-auto"
+          className="game-frame w-full border-0 outline-none [&:fullscreen]:h-screen [&:fullscreen]:w-screen [&:fullscreen]:max-w-none [&:fullscreen]:aspect-auto"
         ></iframe>
         <div className="flex justify-between gap-2 p-5 pb-0">
           <div className="flex flex-col">

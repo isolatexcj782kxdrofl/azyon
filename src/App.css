@@ -158,9 +158,13 @@ select {
 
 #game {
   display: block;
-  min-height: min(70vh, 720px);
-  height: clamp(360px, 70vh, 720px);
+  min-height: 520px;
+  height: min(80vh, 860px);
   background: #000;
+}
+
+.game-frame {
+  aspect-ratio: auto;
 }
 
 #game:fullscreen,
