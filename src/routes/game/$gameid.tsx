@@ -2,8 +2,8 @@ import { games } from "../../util/games";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
-import {
 import { backendUrl } from "../../util/backend";
+import {
   PiCornersInBold,
   PiCornersOutBold,
   PiHeartBold,
@@ -84,7 +84,6 @@ function RouteComponent() {
             event.currentTarget.focus();
           }}
           className="aspect-video w-full border-0 outline-none [&:fullscreen]:h-screen [&:fullscreen]:w-screen [&:fullscreen]:max-w-none [&:fullscreen]:aspect-auto"
-          src={`/game-assets/${game.id}/index.html`}
         ></iframe>
         <div className="flex justify-between gap-2 p-5 pb-0">
           <div className="flex flex-col">
