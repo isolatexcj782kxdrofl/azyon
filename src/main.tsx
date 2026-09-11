@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
+import { backendUrl } from "./util/backend";
 
 const queryClient = new QueryClient();
 // Create a new router instance
@@ -34,9 +35,9 @@ declare global {
   }
 }
 
-const title = localStorage.getItem("title")?.trim() || "Radon Games";
+const title = localStorage.getItem("title")?.trim() || "Azyon";
 document.title = title;
-const icon = localStorage.getItem("icon")?.trim() || "/favicon.ico";
+const icon = localStorage.getItem("icon")?.trim() || "/brand-icon.png";
 document.querySelector('link[rel="icon"]')!.setAttribute("href", icon);
 
 if ("serviceWorker" in navigator) {
@@ -48,19 +49,21 @@ if ("serviceWorker" in navigator) {
       .then(() => {
         console.log(`Registered SW`);
       });
-    navigator.serviceWorker.ready.then(() => {
+    navigator.serviceWorker.ready.then(async () => {
       const connection = new BareMuxConnection("/baremux/worker.js");
-      window.Connection = connection;
 
-      connection.setTransport("/libcurl/index.mjs", [
+      await connection.setTransport("/epoxy/index.mjs", [
         {
           wisp:
-            location.protocol === "http:"
-              ? `ws://${location.host}/w/`
-              : `wss://${location.host}/w/`
+            (() => {
+              const url = new URL(backendUrl("/w/"), location.origin);
+              url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
+              return url.toString();
+            })()
         }
       ]);
-      console.log(`Set transport to libcurl`);
+          window.Connection = connection;
+      console.log(`Set transport to epoxy`);
     });
   }
 }

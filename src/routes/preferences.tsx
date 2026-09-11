@@ -1,83 +1,121 @@
-import { categories, themes } from "../themes";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
+import { useState } from "react";
+import { themes } from "../themes";
 
 export const Route = createFileRoute("/preferences")({
   component: RouteComponent
 });
 
 function RouteComponent() {
+  const [title, setTitle] = useState(
+    () => localStorage.getItem("title")?.trim() || "Azyon"
+  );
+  const [icon, setIcon] = useState(
+    () => localStorage.getItem("icon")?.trim() || "/brand-icon.png"
+  );
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem("theme") || "arcade-ember"
+  );
+  const [reduceMotion, setReduceMotion] = useState(
+    () => localStorage.getItem("reduceMotion") === "true"
+  );
+  const [compactCards, setCompactCards] = useState(
+    () => localStorage.getItem("compactCards") === "true"
+  );
+
+  function reloadWithPreference(key: string, value: string) {
+    localStorage.setItem(key, value);
+    window.location.reload();
+  }
+
   return (
     <motion.main
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="flex flex-col gap-5 px-8 py-16 md:px-16 lg:px-32 xl:px-48"
+      className="content-frame flex flex-col gap-6 py-10 sm:py-14"
     >
-      <section className="rounded-md bg-bg-secondary p-5">
-        <h1 className="text-center text-lg">Themes</h1>
-        <div className="flex flex-col gap-2">
-          {categories.map((category) => (
-            <>
-              <span className="text-sm">{category.name}</span>
+      <div>
+        <p className="eyebrow mb-3">Make it yours</p>
+        <h1 className="text-4xl font-black tracking-[-0.04em] sm:text-5xl">Preferences</h1>
+        <p className="mt-2 max-w-xl text-sm leading-6 text-text-secondary">Tune the arcade to your screen, your mood, and the way you like to play.</p>
+      </div>
 
-              {themes
-                .filter((x) => x.category === category.id)
-                .map((theme) => (
-                  <div
-                    className="flex cursor-pointer items-center justify-center rounded-md p-2 text-sm transition-all hover:scale-[1.01]"
-                    // style={`background-color: ${theme.bgPrimary}; color: ${theme.textPrimary}`}
-                    style={{
-                      backgroundColor: theme.bgPrimary,
-                      color: theme.textPrimary
-                    }}
-                    onClick={() => {
-                      localStorage.setItem("theme", theme.id);
-                      document.documentElement.dataset.theme = theme.id;
-                    }}
-                  >
-                    {theme.name}
-                  </div>
-                ))}
-            </>
-          ))}
+      <section className="glass-panel rounded-2xl p-6 sm:p-8">
+        <p className="eyebrow mb-2">Appearance</p>
+        <h2 className="text-2xl font-black tracking-tight">Set the atmosphere</h2>
+        <div className="mt-6 grid gap-5 sm:grid-cols-3">
+          <label className="flex flex-col gap-2 text-sm font-semibold sm:col-span-2">
+            Color theme
+            <select
+              className="rounded-xl border border-text-primary/20 bg-bg-primary px-3 py-3 text-base text-text-primary shadow-inner outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/40"
+              value={theme}
+              onChange={(event) => {
+                setTheme(event.currentTarget.value);
+                reloadWithPreference("theme", event.currentTarget.value);
+              }}
+            >
+              <option value="arcade-ember">Arcade Ember</option>
+              {themes.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
+            </select>
+          </label>
+          <div className="rounded-xl border border-text-primary/10 bg-bg-primary/35 p-4 text-sm text-text-secondary">
+            <span className="mb-2 block font-bold text-text-primary">Theme preview</span>
+            <span className="flex gap-2"><i className="h-5 w-5 rounded-full bg-accent-primary" /><i className="h-5 w-5 rounded-full bg-accent-secondary" /><i className="h-5 w-5 rounded-full bg-bg-secondary" /></span>
+          </div>
+        </div>
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          <label className="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-text-primary/10 bg-bg-primary/25 p-4 text-sm font-semibold">
+            <span><span className="block">Reduce motion</span><span className="mt-1 block text-xs font-normal text-text-secondary">Keep transitions calm and minimal.</span></span>
+            <input type="checkbox" checked={reduceMotion} onChange={(event) => { setReduceMotion(event.currentTarget.checked); reloadWithPreference("reduceMotion", String(event.currentTarget.checked)); }} className="h-5 w-5 accent-accent-primary" />
+          </label>
+          <label className="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-text-primary/10 bg-bg-primary/25 p-4 text-sm font-semibold">
+            <span><span className="block">Compact cards</span><span className="mt-1 block text-xs font-normal text-text-secondary">Fit more games on each row.</span></span>
+            <input type="checkbox" checked={compactCards} onChange={(event) => { setCompactCards(event.currentTarget.checked); reloadWithPreference("compactCards", String(event.currentTarget.checked)); }} className="h-5 w-5 accent-accent-primary" />
+          </label>
         </div>
       </section>
 
-      <section className="rounded-md bg-bg-secondary p-5">
-        <h1 className="text-center text-lg">Tab Cloaking</h1>
+      <section className="glass-panel rounded-2xl p-6 sm:p-8">
+        <p className="eyebrow mb-2">Personalize your tab</p>
+        <h2 className="text-2xl font-black tracking-tight">Tab cloaking</h2>
+        <p className="mt-2 max-w-lg text-sm leading-6 text-text-secondary">
+          Change the title and icon shown in your browser tab. Updates apply as you type.
+        </p>
 
-        <div className="flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-16">
-          <div className="flex flex-col items-center gap-2">
-            <span>Page Title</span>
+        <div className="mx-auto mt-8 grid max-w-2xl gap-5 sm:grid-cols-2">
+          <label className="flex flex-col gap-2 text-sm font-semibold">
+            Page title
             <input
-              className="rounded-md border border-text-secondary bg-bg-secondary px-2 py-1 text-sm focus:outline-0"
+              className="rounded-xl border border-text-primary/20 bg-bg-primary px-3 py-3 text-base text-text-primary shadow-inner outline-none placeholder:text-text-secondary/70 focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/40"
               onChange={(e) => {
-                const title =
-                  (e.target as HTMLInputElement).value.trim() || "Radon Games";
-
-                document.title = title;
-                localStorage.setItem("title", title);
+                const nextTitle = e.currentTarget.value;
+                setTitle(nextTitle);
+                document.title = nextTitle.trim() || "Azyon";
+                localStorage.setItem("title", nextTitle);
               }}
-              value={localStorage.getItem("title")?.trim() || "Radon Games"}
-            ></input>
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <span>Page Icon</span>
+              value={title}
+              placeholder="Azyon"
+            />
+          </label>
+          <label className="flex flex-col gap-2 text-sm font-semibold">
+            Page icon URL
             <input
-              className="rounded-md border border-text-secondary bg-bg-secondary px-2 py-1 text-sm focus:outline-0"
+              className="rounded-xl border border-text-primary/20 bg-bg-primary px-3 py-3 text-base text-text-primary shadow-inner outline-none placeholder:text-text-secondary/70 focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/40"
               onChange={(e) => {
-                const icon =
-                  (e.target as HTMLInputElement).value.trim() || "/favicon.ico";
+                const nextIcon = e.currentTarget.value;
+                setIcon(nextIcon);
 
                 document.querySelector<HTMLLinkElement>(
                   'link[rel="icon"]'
-                )!.href = icon;
-                localStorage.setItem("icon", icon);
+                )!.href = nextIcon.trim() || "/brand-icon.png";
+                localStorage.setItem("icon", nextIcon);
               }}
-              value={localStorage.getItem("icon")?.trim() || "/favicon.ico"}
-            ></input>
-          </div>
+              value={icon}
+              placeholder="/favicon.ico"
+            />
+          </label>
         </div>
       </section>
     </motion.main>

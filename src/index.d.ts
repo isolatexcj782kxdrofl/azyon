@@ -37,3 +37,4 @@ interface Theme {
   /** Secondary accent color, changes button and banner colors */
   accentSecondary: string;
 }
+

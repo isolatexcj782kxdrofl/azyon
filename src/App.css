@@ -8,6 +8,166 @@ body,
   @apply h-full;
 }
 
+#root {
+  min-height: 100%;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 1;
+  background-image:
+    radial-gradient(circle at 8% 0%, color-mix(in srgb, var(--accent-secondary) 8%, transparent), transparent 30rem),
+    radial-gradient(circle at 92% 100%, color-mix(in srgb, var(--accent-primary) 6%, transparent), transparent 34rem),
+    linear-gradient(color-mix(in srgb, var(--text-primary) 3%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--text-primary) 3%, transparent) 1px, transparent 1px);
+  background-size: auto, auto, 88px 88px, 88px 88px;
+  background-attachment: fixed;
+}
+
+main {
+  animation: page-enter 420ms ease both;
+}
+
+.content-frame {
+  width: min(100% - 2rem, 1180px);
+  margin-inline: auto;
+}
+
+.eyebrow {
+  color: var(--accent-primary);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.section-heading {
+  letter-spacing: -0.03em;
+}
+
+.card-overlay {
+  font-family: "Avenir Next", Avenir, sans-serif;
+}
+
+.card-caption {
+  bottom: 0.625rem;
+  transform: translate3d(0, 0, 0);
+  transition: transform 360ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.group:hover .card-caption,
+.group:focus-visible .card-caption {
+  transform: translate3d(0, -1.65rem, 0);
+}
+
+.card-title {
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 2px var(--bg-primary), 0 2px 10px color-mix(in srgb, var(--bg-primary) 90%, transparent);
+  -webkit-text-stroke: 0.25px color-mix(in srgb, var(--bg-primary) 65%, transparent);
+}
+
+.card-tags {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  height: 1.75rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(0, 0.35rem, 0);
+  transition: opacity 220ms ease, transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.card-tags.is-visible,
+.group:hover .card-tags,
+.group:focus-visible .card-tags {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate3d(0, 0, 0);
+}
+
+.card-tags span {
+  color: var(--text-primary);
+  text-shadow: 0 1px 2px var(--bg-primary), 0 1px 7px color-mix(in srgb, var(--bg-primary) 85%, transparent);
+  -webkit-text-stroke: 0.2px color-mix(in srgb, var(--bg-primary) 55%, transparent);
+}
+
+.brand-glow {
+  text-shadow:
+    0 0 8px color-mix(in srgb, var(--accent-primary) 85%, transparent),
+    0 0 22px color-mix(in srgb, var(--accent-primary) 48%, transparent),
+    0 0 52px color-mix(in srgb, var(--accent-primary) 22%, transparent);
+}
+
+.soft-divider {
+  border-color: color-mix(in srgb, var(--text-primary) 9%, transparent);
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.glass-panel {
+  border: 1px solid color-mix(in srgb, var(--text-primary) 18%, transparent);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--bg-secondary) 54%, transparent),
+    color-mix(in srgb, var(--bg-primary) 30%, transparent)
+  );
+  box-shadow: 0 18px 60px color-mix(in srgb, var(--bg-primary) 45%, transparent), inset 0 1px 0 color-mix(in srgb, var(--text-primary) 12%, transparent);
+  backdrop-filter: blur(16px) saturate(120%);
+}
+
+section,
+footer {
+  position: relative;
+}
+
+input:not([type="checkbox"]),
+textarea,
+select {
+  color: var(--text-primary);
+  caret-color: var(--accent-primary);
+}
+
+.accent-glow {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-primary) 24%, transparent),
+    0 12px 40px color-mix(in srgb, var(--accent-primary) 18%, transparent);
+}
+
+#game:fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  aspect-ratio: auto;
+  max-width: none;
+  border: 0;
+  background: #000;
+}
+
+#game:-webkit-full-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  border: 0;
+  background: #000;
+}
+
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }

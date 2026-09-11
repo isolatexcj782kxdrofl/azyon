@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" role="img" aria-label="Game thumbnail unavailable">
+  <rect width="320" height="180" fill="#20252b"/>
+  <path d="M112 113h96c12 0 22-10 22-22s-10-22-22-22h-10l-9-12h-58l-9 12h-10c-12 0-22 10-22 22s10 22 22 22Z" fill="#3b4652"/>
+  <circle cx="143" cy="91" r="7" fill="#a9d65c"/>
+  <circle cx="177" cy="91" r="7" fill="#a9d65c"/>
+  <path d="M127 88v16m-8-8h16" stroke="#e7edf2" stroke-width="4"/>
+</svg>

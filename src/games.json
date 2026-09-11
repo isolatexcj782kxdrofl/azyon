@@ -2448,5 +2448,13 @@
     "tags": ["sonic"],
     "type": "emulator",
     "emulator": "gba"
+  },
+  {
+    "title": "Eaglercraft",
+    "author": "Eaglercraft contributors",
+    "description": "A browser-based Minecraft 1.5.2 experience.",
+    "id": "eaglecraft",
+    "tags": ["minecraft", "sandbox", "multiplayer"],
+    "type": "html"
   }
 ]

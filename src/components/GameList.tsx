@@ -5,12 +5,12 @@ export function GameList(props: { title: string; games: Game[] }) {
     <>
       {props.games.length > 0 && (
         <>
-          <h3 className="mb-5 mt-16 text-center text-2xl font-bold capitalize tracking-wide md:text-left">
+          <h3 className="section-heading mb-6 mt-12 text-center text-3xl font-black capitalize md:text-left">
             {props.title}
           </h3>
-          <div className="flex flex-wrap justify-center gap-5 pb-16 md:justify-between">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(14.5rem,1fr))] gap-5 pb-16">
             {props.games.map((game) => {
-              return <GameCard game={game} />;
+              return <GameCard key={game.id} game={game} />;
             })}
           </div>
         </>

@@ -1,18 +1,17 @@
 {
-  "name": "radongames",
-  "author": "Cohen Erickson <cohen@radon.games>",
+  "name": "azyon",
   "private": true,
   "version": "4.3.0",
   "license": "AGPL-3.0",
   "type": "module",
   "scripts": {
     "dev": "concurrently -n \"vite,server\" \"vite\" \"pnpm tsx server.ts\"",
+    "start": "tsx server.ts",
     "build": "tsc && vite build",
     "pretty": "prettier --write .",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fastify/http-proxy": "^11.3.0",
     "@fastify/static": "^8.2.0",
     "@mercuryworkshop/bare-mux": "^2.1.7",
     "@mercuryworkshop/epoxy-transport": "^2.1.27",
@@ -45,6 +44,7 @@
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "0.5.4",
     "tailwindcss": "3.3.3",
+    "tsx": "^4.23.13",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.38.0",
     "vite": "^7.0.6",

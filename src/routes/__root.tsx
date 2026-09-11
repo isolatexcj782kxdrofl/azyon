@@ -50,7 +50,7 @@ function NotFound() {
       <form action="/search" method="GET">
         <input
           name="q"
-          className="rounded-md  border border-bg-secondary bg-transparent px-2 py-1 text-base font-normal shadow outline-accent-secondary ring-accent-primary transition-all focus:outline-0 focus:ring-2"
+          className="rounded-xl border border-text-primary/20 bg-bg-secondary px-3 py-2 text-base text-text-primary shadow-inner outline-none placeholder:text-text-secondary/70 focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/40"
           type="text"
         />
       </form>

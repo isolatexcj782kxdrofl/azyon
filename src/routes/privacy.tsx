@@ -15,10 +15,10 @@ function RouteComponent() {
     >
       <h1 className="text-2xl">Privacy Policy</h1>
       <p className="font-normal tracking-wide">
-        Last updated: September 26, 2023
+        Last updated: September 10, 2026
       </p>
       <p className="font-normal tracking-wide">
-        This Privacy Policy describes how Radon Games ("we," "us," or "our")
+        This Privacy Policy describes how Azyon ("we," "us," or "our")
         collects, uses, and discloses information, including personal
         information, that you provide to us or that we collect when you visit
         our website. By accessing or using our website, you consent to the
@@ -52,22 +52,12 @@ function RouteComponent() {
       </li>
 
       <h3 className="mt-2 text-lg" id="1.c">
-        c. Google Analytics and AdSense:
+        c. Hosting and security logs:
       </h3>
       <li className="font-normal tracking-wide">
-        Our website uses Google Analytics and Google AdSense, which may collect
-        data about your interactions with our website, including browsing
-        behavior and demographic information. This data is collected by Google
-        and is subject to Google's Privacy Policy. You can review Google's
-        privacy policy at{" "}
-        <a
-          href="https://policies.google.com/privacy"
-          target="_blank"
-          className="underline transition-all hover:text-accent-primary"
-        >
-          Google Privacy Policy
-        </a>
-        .
+        Our hosting provider may process standard technical information such as
+        IP address, browser type, and request time to deliver and protect the
+        service.
       </li>
 
       <h2 className="mt-8 text-xl" id="2">
@@ -195,16 +185,8 @@ function RouteComponent() {
         8. Contact Us
       </h2>
       <p className="font-normal tracking-wide">
-        If you have any questions or concerns about our Privacy Policy or our
-        data practices, please contact us at{" "}
-        <a
-          href="mailto:contact@radon.games"
-          target="_blank"
-          className="underline transition-all hover:text-accent-primary"
-        >
-          contact@radon.games
-        </a>
-        .
+        If you have questions about this Privacy Policy, use the issue or
+        contact channel published with the project hosting this site.
       </p>
       <p className="font-normal tracking-wide">
         By using our website, you agree to the terms of this Privacy Policy. If

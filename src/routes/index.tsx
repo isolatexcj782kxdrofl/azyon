@@ -1,10 +1,14 @@
-import { Banner } from "../assets/Banner";
 import { GameRow } from "../components/GameRow";
-import { getTheme } from "../util/theme";
+import { localGameIds } from "../util/localGameIds";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { PiMagnifyingGlassBold, PiDiceFiveBold } from "react-icons/pi";
+import {
+  PiArrowUpRightBold,
+  PiGameControllerBold,
+  PiSparkleBold,
+  PiLightningBold
+} from "react-icons/pi";
 
 export const Route = createFileRoute("/")({
   component: Home
@@ -13,14 +17,13 @@ export function Home() {
   const { data } = useQuery({
     queryKey: ["games"],
     queryFn: async () => {
-      return fetch("/games.json").then((res) => res.json());
+      return fetch("/games.json")
+        .then((res) => res.json() as Promise<Game[]>)
+        .then((games) => games.filter((game) => localGameIds.has(game.id)));
     }
   });
 
   if (!data) return null;
-
-  const randomGame = data[Math.floor(Math.random() * data.length)];
-  const { bgSecondary, accentSecondary } = getTheme();
 
   const favorites = (localStorage.getItem("favorites") ?? "")
     .split(",")
@@ -28,12 +31,23 @@ export function Home() {
     .map((x) => data.find((y) => y.id === x)!)
     .filter((x) => x !== undefined);
 
+  const recentlyPlayed = (localStorage.getItem("recentGames") ?? "")
+    .split(",")
+    .filter((id) => id !== "")
+    .map((id) => data.find((game) => game.id === id))
+    .filter((game): game is Game => game !== undefined);
+
   const featuredIds = [
     "slope",
     "tetris",
     "friendly-fire",
     "moto-x3m-pool-party",
-    "economical"
+    "economical",
+    "retro-bowl",
+    "geometry-dash-remastered",
+    "run-3",
+    "drift-hunters",
+    "basket-random"
   ];
 
   const featured = featuredIds
@@ -45,68 +59,87 @@ export function Home() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="px-8 md:px-16 lg:px-32 xl:px-48"
+      className="content-frame pb-12 pt-7 sm:pb-20 sm:pt-10"
     >
-      <section className="my-32 flex w-full flex-col items-center justify-center gap-5">
-        <Banner className="h-10 sm:h-14" />
-        <p className="text-center">
-          An open-source unblocked games website built with simplicity in mind.
-        </p>
-        <div className="flex gap-5">
-          <motion.a
-            href="/games"
-            className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-lg bg-bg-secondary px-4 py-2 font-semibold shadow-lg focus:outline-0"
-            initial={{
-              boxShadow: `0px 0px 0px ${bgSecondary}`
-            }}
-            variants={{
-              focus: {
-                scale: 1.05,
-                boxShadow: `0px 0px 16px ${bgSecondary}`
-              }
-            }}
-            whileHover="focus"
-            whileFocus="focus"
+      <section className="hero-panel glass-panel relative isolate min-h-[30rem] overflow-hidden rounded-[1.75rem] shadow-2xl shadow-black/25">
+        <div className="relative mx-auto flex min-h-[30rem] max-w-2xl flex-col items-center justify-center px-6 py-8 text-center sm:px-12 sm:py-12">
+          <motion.div
+            className="eyebrow mb-5 flex items-center gap-2"
+            initial={{ opacity: 0, x: -12 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.15 }}
           >
-            <PiMagnifyingGlassBold />
-            Browse Games
-          </motion.a>
-          <motion.a
-            href={`/game/${randomGame.id}`}
-            className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-lg bg-accent-secondary px-4 py-2 font-semibold shadow-lg focus:outline-0"
-            initial={{
-              boxShadow: `0px 0px 0px ${accentSecondary}`
-            }}
-            variants={{
-              focus: {
-                scale: 1.05,
-                boxShadow: `0px 0px 16px ${accentSecondary}`
-              }
-            }}
-            whileHover="focus"
-            whileFocus="focus"
-          >
-            <PiDiceFiveBold />
-            Pick One For Me
-          </motion.a>
+            <PiSparkleBold /> Featured this week
+          </motion.div>
+          <h1 className="brand-glow mb-4 text-6xl font-black leading-none tracking-[0.08em] text-accent-primary sm:text-8xl">
+            AZYON
+          </h1>
+          <p className="max-w-lg text-base leading-7 text-text-secondary sm:text-lg">
+            A hand-picked arcade for quick breaks, high scores, and one-more-round energy.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a href="/games" className="accent-glow flex items-center gap-2 rounded-full bg-accent-primary px-6 py-3.5 text-sm font-black text-bg-primary transition hover:brightness-110">
+              <PiLightningBold /> Play something
+            </a>
+            <a href="/games" className="flex items-center gap-2 rounded-full border border-text-primary/20 bg-bg-primary/40 px-5 py-3.5 text-sm font-bold backdrop-blur transition hover:border-text-primary/50">
+              Explore library <PiArrowUpRightBold />
+            </a>
+            <a href="/proxy" className="flex items-center gap-2 rounded-full border border-accent-secondary/40 bg-accent-secondary/10 px-5 py-3.5 text-sm font-bold text-accent-secondary backdrop-blur transition hover:border-accent-secondary hover:bg-accent-secondary/20">
+              Access Web / AI <PiArrowUpRightBold />
+            </a>
+          </div>
+          <div className="mt-8 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-text-secondary">
+            <PiGameControllerBold className="text-accent-primary" /> 200+ games / no account needed
+          </div>
         </div>
       </section>
 
-      <section className="mb-5">
-        <h3 className="mb-2 text-2xl font-bold tracking-wide">Favorites</h3>
+      <section className="mb-14 mt-14">
+        <div className="mb-4 flex items-end justify-between gap-4">
+          <div>
+            <p className="eyebrow mb-2">Your shelf</p>
+            <h3 className="section-heading text-3xl font-black">Favorites</h3>
+          </div>
+            <a href="/games" className="hidden items-center gap-2 text-sm font-semibold text-text-secondary hover:text-accent-primary sm:flex">View all <PiArrowUpRightBold /></a>
+        </div>
         {favorites.length > 0 ? (
-          <GameRow games={favorites} />
+          <GameRow games={favorites} disableCardScale />
         ) : (
-          <p>
+          <p className="glass-panel rounded-xl px-5 py-4 text-sm text-text-secondary">
             Click the heart next to the full screen button in order to add a
             game to your favorites.
           </p>
         )}
       </section>
 
-      <section className="mb-10">
-        <h3 className="mb-2 text-2xl font-bold tracking-wide">Featured</h3>
-        <GameRow games={featured} />
+      {recentlyPlayed.length > 0 && (
+        <section className="mb-12">
+          <div className="mb-4 flex items-end justify-between gap-4">
+            <div>
+              <p className="eyebrow mb-2">Jump back in</p>
+              <h3 className="section-heading text-3xl font-black">Recently played</h3>
+            </div>
+            <span className="hidden text-sm text-text-secondary sm:inline">Your latest games</span>
+          </div>
+          <GameRow games={recentlyPlayed} disableCardScale />
+        </section>
+      )}
+
+      <section className="mb-16">
+        <div className="mb-4">
+          <p className="eyebrow mb-2">Curated for you</p>
+          <h3 className="section-heading text-3xl font-black">Featured games</h3>
+        </div>
+        <GameRow games={featured} disableCardScale />
+        <div className="mt-8 flex justify-center">
+          <a
+            href="/games"
+            className="group flex items-center gap-3 rounded-xl border border-text-primary/15 bg-bg-secondary/55 px-5 py-3 text-sm font-bold text-text-primary shadow-lg backdrop-blur transition hover:border-accent-primary/50 hover:bg-bg-secondary hover:text-accent-primary"
+          >
+            Browse hundreds more games
+            <PiArrowUpRightBold className="transition-transform group-hover:translate-x-1" />
+          </a>
+        </div>
       </section>
     </motion.main>
   );

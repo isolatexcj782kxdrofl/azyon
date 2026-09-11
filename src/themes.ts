@@ -126,17 +126,6 @@ const themes = [
 		accentSecondary: "#ea9d34",
 	},
 	{
-		name: "Cohen",
-		category: "people",
-		id: "cohen",
-		bgPrimary: "#0a0f14",
-		bgSecondary: "#1d2b3a",
-		textPrimary: "#fffcf2",
-		textSecondary: "#ccc5b9",
-		accentPrimary: "#e65a45",
-		accentSecondary: "#e65a45",
-	},
-	{
 		name: "Nebelung",
 		category: "people",
 		id: "nebelung",

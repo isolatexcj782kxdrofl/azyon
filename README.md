@@ -1,15 +1,15 @@
 <p align="center">
   <kbd>
-    <img width="100px" src="https://avatars.githubusercontent.com/u/107269758">
+    <img width="100px" src="/brand-icon.png">
   </kbd>
 </p>
 
 <h1 align="center">
-  Radon Games
+  Azyon
 </h1>
 
 <p align="center">
-  An open-source unblocked games website built with simplicity in mind.
+  An open platform for games, AI, and more.
 </p>
   
 - 📈 Play from our **rapidly growing** selection of games
@@ -28,6 +28,4 @@ pnpm run preview
 
 ### Where to get help
 
-For questions and suggestions please join our [Discord server](https://discord.gg/C2fbK35Rhg)
-
-For any website/game issues please create a new GitHub issue
+For website or game issues, open an issue in your project repository.

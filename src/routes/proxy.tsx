@@ -1,5 +1,3 @@
-import { Banner } from "../assets/Banner";
-import { Transparent } from "../assets/Transparent";
 import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion, Reorder } from "motion/react";
 import { useEffect, useState } from "react";
@@ -25,6 +23,7 @@ export const Route = createFileRoute("/proxy")({
 });
 
 function RouteComponent() {
+  const [transportReady, setTransportReady] = useState(Boolean(window.Connection));
   const [tabs, setTabs] = useState<Tab[]>([]);
   const [activeTab, setActiveTab] = useState<number>(
     Number(localStorage.getItem("activeTab")!) || 0
@@ -95,25 +94,33 @@ function RouteComponent() {
   }
 
   useEffect(() => {
+    const storedTabs = localStorage.getItem("tabs");
+    if (!storedTabs) return;
+
     try {
-      const tabs = JSON.parse(localStorage.getItem("tabs") ?? "");
-      setTabs(tabs);
-      for (const tab of tabs) {
-        addFrame(tab);
-      }
+      setTabs(JSON.parse(storedTabs));
     } catch {
-      // Ignore
+      localStorage.removeItem("tabs");
     }
   }, []);
 
   useEffect(() => {
-    if (tabs.length === 0) {
-      //TODO: Find better solution
-      // if i dont do this we get a weird libcurl error about not loading the wasm
-      setTimeout(() => {
-        addTab("https://duckduckgo.com/");
-      }, 200);
+    if (!transportReady) {
+      const readyCheck = window.setInterval(() => {
+        if (window.Connection) {
+          setTransportReady(true);
+          window.clearInterval(readyCheck);
+        }
+      }, 100);
+
+      return () => window.clearInterval(readyCheck);
     }
+
+    if (tabs.length === 0) addTab("https://duckduckgo.com/");
+
+    tabs.forEach((tab) => {
+      if (!document.getElementById(tab.id.toString())) addFrame(tab);
+    });
 
     const iframes = document.querySelectorAll("iframe");
     iframes.forEach((iframe) => {
@@ -123,7 +130,7 @@ function RouteComponent() {
     if (iframe) {
       iframe.style.display = "block";
     }
-  }, [tabs, activeTab]);
+  }, [transportReady, tabs, activeTab]);
 
   useEffect(() => {
     const iframe = document.getElementById(
@@ -172,13 +179,13 @@ function RouteComponent() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="flex h-full w-full select-none"
+      className="flex h-full w-full select-none bg-bg-primary"
     >
-      <div className="flex h-full w-16 flex-col border-r-2 border-bg-secondary bg-bg-primary transition-all sm:w-64">
-        <div className="flex h-16 w-full items-center justify-center border-b-2 border-bg-secondary">
+      <div className="flex h-full w-16 flex-col border-r border-text-primary/10 bg-bg-secondary/30 transition-all sm:w-64">
+        <div className="flex h-16 w-full items-center justify-center border-b border-text-primary/10">
           <a href="/">
-            <Banner className="hidden h-6 sm:block" />
-            <Transparent className="block h-6 sm:hidden" />
+            <span className="hidden text-lg font-black tracking-wide sm:inline">Azyon</span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-primary font-black text-bg-primary sm:hidden">A</span>
           </a>
         </div>
         <Reorder.Group
@@ -204,10 +211,10 @@ function RouteComponent() {
                   transition={{
                     duration: 0.1
                   }}
-                  className={`flex aspect-square h-10 w-10 items-center justify-center rounded p-2 text-sm sm:w-full sm:justify-normal sm:gap-2 ${
+                  className={`flex aspect-square h-11 w-11 items-center justify-center rounded-xl border border-transparent p-2 text-sm transition-all sm:h-auto sm:min-h-11 sm:w-full sm:justify-normal sm:gap-2 ${
                     tab.id === activeTab
-                      ? "bg-accent-secondary"
-                      : "bg-bg-secondary"
+                      ? "border-accent-secondary/30 bg-accent-secondary/20 text-text-primary shadow-lg"
+                      : "bg-bg-secondary/60 hover:border-text-primary/10 hover:bg-bg-secondary"
                   }`}
                   onMouseDown={() => {
                     setActiveTab(tab.id);
@@ -236,20 +243,24 @@ function RouteComponent() {
             })}
           </AnimatePresence>
         </Reorder.Group>
-        <div className="flex h-16 w-full items-center justify-end border-t-2 border-bg-secondary p-4 text-xl">
-          <div
-            className="rounded bg-bg-secondary p-2"
+        <div className="flex h-16 w-full items-center justify-end border-t border-text-primary/10 p-4 text-xl">
+          <button
+            type="button"
+            aria-label="New tab"
+            className="rounded-lg bg-bg-secondary p-2 transition hover:bg-accent-secondary hover:text-bg-primary"
             onClick={() => {
               addTab("https://duckduckgo.com");
             }}
           >
             <FiPlus />
-          </div>
+          </button>
         </div>
       </div>
-      <div className="flex flex-1 flex-col bg-white" id="frames">
-        <div className="flex h-16 w-full items-center justify-center gap-2 bg-bg-secondary p-3">
-          <div
+      <div className="flex flex-1 flex-col bg-bg-primary" id="frames">
+        <div className="flex min-h-16 w-full items-center justify-center gap-2 border-b border-text-primary/10 bg-bg-secondary/70 p-3 backdrop-blur-xl">
+          <button
+            type="button"
+            aria-label="Go back"
             onClick={() => {
               (
                 document.getElementById(
@@ -257,11 +268,13 @@ function RouteComponent() {
                 ) as HTMLIFrameElement
               ).contentWindow!.history.back();
             }}
-            className="flex aspect-square h-full cursor-pointer items-center justify-center rounded text-lg transition-all duration-[50] hover:bg-bg-primary hover:shadow"
+            className="flex aspect-square h-full cursor-pointer items-center justify-center rounded-lg px-2 text-lg transition-all hover:bg-bg-primary hover:text-accent-primary hover:shadow"
           >
             <FiArrowLeft />
-          </div>
-          <div
+          </button>
+          <button
+            type="button"
+            aria-label="Go forward"
             onClick={() => {
               (
                 document.getElementById(
@@ -269,11 +282,13 @@ function RouteComponent() {
                 ) as HTMLIFrameElement
               ).contentWindow!.history.forward();
             }}
-            className="flex aspect-square h-full cursor-pointer items-center justify-center rounded text-lg transition-all duration-[50] hover:bg-bg-primary hover:shadow"
+            className="flex aspect-square h-full cursor-pointer items-center justify-center rounded-lg px-2 text-lg transition-all hover:bg-bg-primary hover:text-accent-primary hover:shadow"
           >
             <FiArrowRight />
-          </div>
-          <div
+          </button>
+          <button
+            type="button"
+            aria-label="Reload page"
             onClick={() => {
               (
                 document.getElementById(
@@ -281,12 +296,12 @@ function RouteComponent() {
                 ) as HTMLIFrameElement
               ).contentWindow!.location.reload();
             }}
-            className="flex aspect-square h-full cursor-pointer items-center justify-center rounded text-lg transition-all duration-[50] hover:bg-bg-primary hover:shadow"
+            className="flex aspect-square h-full cursor-pointer items-center justify-center rounded-lg px-2 text-lg transition-all hover:bg-bg-primary hover:text-accent-primary hover:shadow"
           >
             <FiRotateCw />
-          </div>
+          </button>
           <input
-            className="h-full flex-1 rounded bg-bg-primary px-3 py-2 font-medium shadow focus:outline-0"
+            className="h-full flex-1 rounded-xl border border-text-primary/20 bg-bg-primary px-4 py-2 font-medium text-text-primary shadow-inner outline-none ring-accent-primary placeholder:text-text-secondary/70 transition focus:border-accent-primary focus:ring-2"
             value={
               inputValue !== null
                 ? inputValue
@@ -303,17 +318,21 @@ function RouteComponent() {
               }
             }}
           ></input>
-          <div
+          <button
+            type="button"
+            aria-label="Fullscreen"
             onClick={() => {
               document
                 .getElementById(activeTab.toString())!
                 .requestFullscreen();
             }}
-            className="flex aspect-square h-full cursor-pointer items-center justify-center rounded text-lg transition-all duration-[50] hover:bg-bg-primary hover:shadow"
+            className="flex aspect-square h-full cursor-pointer items-center justify-center rounded-lg px-2 text-lg transition-all hover:bg-bg-primary hover:text-accent-primary hover:shadow"
           >
             <FiMaximize />
-          </div>
-          <div
+          </button>
+          <button
+            type="button"
+            aria-label="Open in new tab"
             onClick={() => {
               open(
                 (
@@ -323,10 +342,10 @@ function RouteComponent() {
                 ).contentWindow!.location.href
               );
             }}
-            className="flex aspect-square h-full cursor-pointer items-center justify-center rounded text-lg transition-all duration-[50] hover:bg-bg-primary hover:shadow"
+            className="flex aspect-square h-full cursor-pointer items-center justify-center rounded-lg px-2 text-lg transition-all hover:bg-bg-primary hover:text-accent-primary hover:shadow"
           >
             <FiExternalLink />
-          </div>
+          </button>
         </div>
       </div>
     </motion.main>

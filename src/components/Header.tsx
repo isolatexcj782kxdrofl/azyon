@@ -1,14 +1,13 @@
-import { Transparent } from "../assets/Transparent";
 import { useMatch } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import type { IconType } from "react-icons/lib";
 import {
   PiGameControllerBold,
   PiHouseBold,
-  PiGithubLogoBold,
-  PiDiscordLogoBold,
   PiGearBold,
-  PiDetectiveBold
+  PiDetectiveBold,
+  PiMagnifyingGlassBold,
+  PiArrowUpRightBold
 } from "react-icons/pi";
 
 const item = {
@@ -49,7 +48,7 @@ export function Header() {
 
   return (
     <motion.nav
-      className="flex h-16 w-full items-center justify-center border-b-2 border-text-secondary bg-bg-primary px-8 shadow-lg sm:justify-between md:px-16 lg:px-32 xl:px-48"
+      className="sticky top-0 z-30 flex min-h-[4.75rem] w-full items-center justify-center border-b border-text-primary/10 bg-bg-primary/80 px-4 backdrop-blur-2xl sm:justify-between sm:px-8 lg:px-12"
       variants={{
         hidden: { opacity: 1, y: -64 },
         visible: {
@@ -65,35 +64,33 @@ export function Header() {
       initial="hidden"
       animate="visible"
     >
-      <div className="flex gap-5">
-        <motion.a href="/" variants={item} aria-label="Home">
-          <Transparent className="h-6 w-auto" />
+      <div className="flex items-center gap-5 sm:gap-9">
+        <motion.a href="/" variants={item} aria-label="Home" className="group flex items-center gap-2.5">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-primary text-lg font-black text-bg-primary shadow-[0_0_24px_rgba(255,118,92,0.28)] transition-transform group-hover:-rotate-6">A</span>
+          <span className="hidden text-base font-black tracking-[0.08em] sm:inline">AZYON</span>
         </motion.a>
-        <Link href="/" icon={PiHouseBold} text="Home" />
-        <Link href="/games" icon={PiGameControllerBold} text="Games" />
-        <Link href="/proxy" icon={PiDetectiveBold} text="Proxy" />
+        <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.12em] text-text-secondary sm:gap-6">
+          <Link href="/" icon={PiHouseBold} text="Home" />
+          <Link href="/games" icon={PiGameControllerBold} text="Games" />
+          <Link href="/proxy" icon={PiDetectiveBold} text="Access Web / AI" />
+        </div>
       </div>
-      <div className="hidden gap-5 sm:flex">
-        <form method="GET" action="/search">
+      <div className="hidden items-center gap-5 sm:flex">
+        <form method="GET" action="/search" className="group relative flex items-center">
+          <PiMagnifyingGlassBold className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary transition-colors group-focus-within:text-accent-primary" />
           <motion.input
             name="q"
             variants={item}
-            className="rounded-md border border-bg-secondary bg-transparent px-2 py-1 text-sm font-normal shadow outline-accent-secondary ring-accent-primary transition-all focus:outline-0 focus:ring-2"
-            placeholder="Search"
+            className="search-input h-11 w-56 rounded-full border border-text-primary/20 py-2 pl-10 pr-11 text-sm font-normal text-text-primary shadow-[0_8px_24px_rgba(0,0,0,0.22)] backdrop-blur-xl outline-none transition-all placeholder:text-text-secondary/80 hover:border-accent-secondary/50 focus:w-64 focus:border-accent-primary/70 focus:ring-2 focus:ring-accent-primary/20"
+            placeholder="Search games"
             type="text"
+            style={{ backgroundColor: "var(--bg-secondary)" }}
           />
+          <button type="submit" aria-label="Submit search" className="absolute right-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-accent-primary text-bg-primary transition hover:scale-105 hover:brightness-110">
+            <PiArrowUpRightBold />
+          </button>
         </form>
         <Link href="/preferences" icon={PiGearBold} label="Preferences" />
-        <Link
-          href="https://github.com/Radon-Games/Radon-Games"
-          icon={PiGithubLogoBold}
-          label="GitHub"
-        />
-        <Link
-          href="https://discord.gg/unblock"
-          icon={PiDiscordLogoBold}
-          label="Discord"
-        />
       </div>
     </motion.nav>
   );

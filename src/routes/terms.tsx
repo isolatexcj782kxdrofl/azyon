@@ -20,7 +20,7 @@ function RouteComponent() {
       <div className="mb-3 flex flex-col gap-2">
         <span className="font-normal tracking-wide">
           These Terms of Service ("Terms") outline the terms and conditions
-          governing your use of Radon Games ("we," "us," or "our") and its
+          governing your use of Azyon ("we," "us," or "our") and its
           services. By using this service, you agree that you are agreeing to
           all of the terms and conditions written below and the{" "}
           <a
@@ -191,16 +191,9 @@ function RouteComponent() {
       </h2>
       <div className="mb-3 flex flex-col gap-2">
         <span className="font-normal tracking-wide">
-          You agree to resolve any dispute with us through binding arbitration
-          rather than in court. Disputes can be submitted to{" "}
-          <a
-            href="mailto:disputes@radon.games"
-            target="_blank"
-            className="underline transition-all hover:text-accent-primary"
-          >
-            disputes@radon.games
-          </a>
-          .
+          You agree to resolve any dispute with us through the contact channel
+          published with the project hosting this service before pursuing
+          formal action.
         </span>
       </div>
     </motion.main>

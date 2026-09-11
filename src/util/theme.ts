@@ -1,49 +1,43 @@
 import { themes } from "../themes";
 
+function selectedTheme(): Theme {
+  return themes.find((theme) => theme.id === localStorage.getItem("theme")) ?? {
+    name: "Arcade Ember",
+    category: "default",
+    id: "arcade-ember",
+    bgPrimary: "#0b1220",
+    bgSecondary: "#15243a",
+    textPrimary: "#f3f7ed",
+    textSecondary: "#a7b7c7",
+    accentPrimary: "#c6f36b",
+    accentSecondary: "#59d6c3"
+  };
+}
+
 export function getStyle(): string {
-  return `${themes
-    .map((theme) => {
-      return `
-      [data-theme="${theme.id}"] {
-        --bg-primary: ${theme.bgPrimary};
-        --bg-secondary: ${theme.bgSecondary};
-        --text-primary: ${theme.textPrimary};
-        --text-secondary: ${theme.textSecondary};
-        --accent-primary: ${theme.accentPrimary};
-        --accent-secondary: ${theme.accentSecondary};
-      }
-    `.replace(/\s/g, "");
-    })
-    .join("")}`;
+  const theme = selectedTheme();
+
+  return `
+    :root, [data-theme] {
+      --bg-primary: ${theme.bgPrimary};
+      --bg-secondary: ${theme.bgSecondary};
+      --text-primary: ${theme.textPrimary};
+      --text-secondary: ${theme.textSecondary};
+      --accent-primary: ${theme.accentPrimary};
+      --accent-secondary: ${theme.accentSecondary};
+    }
+  `.replace(/\s/g, "");
 }
 
 export function updateTheme(): void {
-  document.documentElement.dataset.theme =
-    localStorage.getItem("theme") ?? getDefaultTheme();
+  document.documentElement.dataset.theme = selectedTheme().id;
+  document.documentElement.classList.toggle("reduce-motion", localStorage.getItem("reduceMotion") === "true");
+  document.documentElement.classList.toggle("compact-cards", localStorage.getItem("compactCards") === "true");
 }
 
 updateTheme();
 window.addEventListener("storage", updateTheme);
 
-export function setTheme(id: string): void {
-  localStorage.setItem("theme", id);
-  updateTheme();
-}
-
 export function getTheme(): Theme {
-  return themes.find(
-    (x) => x.id === (localStorage.getItem("theme") ?? getDefaultTheme())
-  )!;
-}
-
-function getDefaultTheme(): string {
-  const date = new Date();
-  const month = date.getMonth();
-  const day = date.getDate();
-
-  if (month === 11 && day >= 20 && day <= 25) {
-    return "christmas";
-  }
-
-  return "dark";
+  return selectedTheme();
 }

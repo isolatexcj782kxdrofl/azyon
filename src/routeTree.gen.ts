@@ -10,17 +10,24 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as ProxyRouteImport } from './routes/proxy'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PreferencesRouteImport } from './routes/preferences'
 import { Route as GamesRouteImport } from './routes/games'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TagTagRouteImport } from './routes/tag/$tag'
+import { Route as GamesGameidRouteImport } from './routes/games/$gameid'
 import { Route as GameGameidRouteImport } from './routes/game/$gameid'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProxyRoute = ProxyRouteImport.update({
@@ -53,6 +60,11 @@ const TagTagRoute = TagTagRouteImport.update({
   path: '/tag/$tag',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GamesGameidRoute = GamesGameidRouteImport.update({
+  id: '/$gameid',
+  path: '/$gameid',
+  getParentRoute: () => GamesRoute,
+} as any)
 const GameGameidRoute = GameGameidRouteImport.update({
   id: '/game/$gameid',
   path: '/game/$gameid',
@@ -61,33 +73,39 @@ const GameGameidRoute = GameGameidRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/games': typeof GamesRoute
+  '/games': typeof GamesRouteWithChildren
   '/preferences': typeof PreferencesRoute
   '/privacy': typeof PrivacyRoute
   '/proxy': typeof ProxyRoute
+  '/search': typeof SearchRoute
   '/terms': typeof TermsRoute
   '/game/$gameid': typeof GameGameidRoute
+  '/games/$gameid': typeof GamesGameidRoute
   '/tag/$tag': typeof TagTagRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/games': typeof GamesRoute
+  '/games': typeof GamesRouteWithChildren
   '/preferences': typeof PreferencesRoute
   '/privacy': typeof PrivacyRoute
   '/proxy': typeof ProxyRoute
+  '/search': typeof SearchRoute
   '/terms': typeof TermsRoute
   '/game/$gameid': typeof GameGameidRoute
+  '/games/$gameid': typeof GamesGameidRoute
   '/tag/$tag': typeof TagTagRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/games': typeof GamesRoute
+  '/games': typeof GamesRouteWithChildren
   '/preferences': typeof PreferencesRoute
   '/privacy': typeof PrivacyRoute
   '/proxy': typeof ProxyRoute
+  '/search': typeof SearchRoute
   '/terms': typeof TermsRoute
   '/game/$gameid': typeof GameGameidRoute
+  '/games/$gameid': typeof GamesGameidRoute
   '/tag/$tag': typeof TagTagRoute
 }
 export interface FileRouteTypes {
@@ -98,8 +116,10 @@ export interface FileRouteTypes {
     | '/preferences'
     | '/privacy'
     | '/proxy'
+    | '/search'
     | '/terms'
     | '/game/$gameid'
+    | '/games/$gameid'
     | '/tag/$tag'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -108,8 +128,10 @@ export interface FileRouteTypes {
     | '/preferences'
     | '/privacy'
     | '/proxy'
+    | '/search'
     | '/terms'
     | '/game/$gameid'
+    | '/games/$gameid'
     | '/tag/$tag'
   id:
     | '__root__'
@@ -118,17 +140,20 @@ export interface FileRouteTypes {
     | '/preferences'
     | '/privacy'
     | '/proxy'
+    | '/search'
     | '/terms'
     | '/game/$gameid'
+    | '/games/$gameid'
     | '/tag/$tag'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  GamesRoute: typeof GamesRoute
+  GamesRoute: typeof GamesRouteWithChildren
   PreferencesRoute: typeof PreferencesRoute
   PrivacyRoute: typeof PrivacyRoute
   ProxyRoute: typeof ProxyRoute
+  SearchRoute: typeof SearchRoute
   TermsRoute: typeof TermsRoute
   GameGameidRoute: typeof GameGameidRoute
   TagTagRoute: typeof TagTagRoute
@@ -141,6 +166,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/proxy': {
@@ -185,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TagTagRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/games/$gameid': {
+      id: '/games/$gameid'
+      path: '/$gameid'
+      fullPath: '/games/$gameid'
+      preLoaderRoute: typeof GamesGameidRouteImport
+      parentRoute: typeof GamesRoute
+    }
     '/game/$gameid': {
       id: '/game/$gameid'
       path: '/game/$gameid'
@@ -195,12 +234,23 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface GamesRouteChildren {
+  GamesGameidRoute: typeof GamesGameidRoute
+}
+
+const GamesRouteChildren: GamesRouteChildren = {
+  GamesGameidRoute: GamesGameidRoute,
+}
+
+const GamesRouteWithChildren = GamesRoute._addFileChildren(GamesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  GamesRoute: GamesRoute,
+  GamesRoute: GamesRouteWithChildren,
   PreferencesRoute: PreferencesRoute,
   PrivacyRoute: PrivacyRoute,
   ProxyRoute: ProxyRoute,
+  SearchRoute: SearchRoute,
   TermsRoute: TermsRoute,
   GameGameidRoute: GameGameidRoute,
   TagTagRoute: TagTagRoute,

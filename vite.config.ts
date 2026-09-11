@@ -8,7 +8,6 @@ import { libcurlPath } from "@mercuryworkshop/libcurl-transport";
 
 //@ts-expect-error ts being ts
 import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
-const isDev = process.env.NODE_ENV === 'development';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -41,27 +40,30 @@ export default defineConfig({
       "X-Frame-Options": "SAMEORIGIN"
     },
     proxy: {
-      "/cdn": {
-        target: isDev ? "http://localhost:8080" : "https://cdn.radon.games",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/cdn/, ""),
-        headers: {
-          referer: isDev ? "http://localhost:5173" : "https://cdn.radon.games"
-        }
+      "/cdn/src": {
+        target: "http://localhost:1111",
+        changeOrigin: true
       },
-      "/api": {
-        target: "https://api.radon.games",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ""),
-        headers: {
-          referer: "https://api.radon.games"
-        },
-
+      "/game-assets": {
+        target: "http://localhost:1111",
+        changeOrigin: true
       },
       "/w/": {
         target: "http://localhost:1111/",
         rewrite: (p) => p.replace(/^\/w/, ""),
         ws: true,
+      },
+    }
+  },
+  preview: {
+    proxy: {
+      "/cdn/src": {
+        target: "http://localhost:1111",
+        changeOrigin: true
+      },
+      "/game-assets": {
+        target: "http://localhost:1111",
+        changeOrigin: true
       },
     }
   },
