@@ -56,8 +56,8 @@ function RouteComponent() {
     // @ts-expect-error scram
     iframe.src = scram.encodeUrl(tab.url);
     iframe.id = tab.id.toString();
-    iframe.className = "absolute inset-x-0 bottom-0 top-[4.5rem] h-auto w-full border-0 bg-white";
-    document.getElementById("frames")!.appendChild(iframe);
+    iframe.className = "absolute inset-0 h-full w-full border-0 bg-white";
+    document.getElementById("frame-viewport")!.appendChild(iframe);
   }
 
   function removeTab(id: number) {
@@ -192,7 +192,7 @@ function RouteComponent() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="flex h-full w-full select-none overflow-hidden bg-[#11151c]"
+      className="flex h-[100dvh] min-h-[32rem] w-full select-none overflow-hidden bg-[#11151c]"
     >
       <div className="flex h-full w-16 flex-col border-r border-white/10 bg-[#171c25] shadow-2xl transition-all sm:w-72">
         <div className="flex h-16 w-full items-center justify-center border-b border-white/10 bg-[#11151c]">
@@ -271,7 +271,7 @@ function RouteComponent() {
           </button>
         </div>
       </div>
-      <div className="relative flex flex-1 flex-col bg-[#0d1117]" id="frames">
+      <div className="relative flex min-w-0 flex-1 flex-col bg-[#0d1117]" id="frames">
         <div className="relative z-10 flex min-h-16 w-full items-center justify-center gap-2 border-b border-white/10 bg-[#171c25]/95 p-3 shadow-xl backdrop-blur-xl">
           <button
             type="button"
@@ -362,6 +362,7 @@ function RouteComponent() {
             <FiExternalLink />
           </button>
         </div>
+        <div className="absolute inset-x-0 bottom-0 top-16" id="frame-viewport" />
       </div>
     </motion.main>
   );
